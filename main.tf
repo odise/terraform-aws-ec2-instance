@@ -73,6 +73,7 @@ module "ec2" {
 }
 
 module "ebs_backups" {
+  count   = var.backup_volumes == true ? 1 : 0
   source  = "lgallard/backup/aws"
   version = " ~> 0.1.2"
   # Plan
@@ -116,7 +117,7 @@ resource "aws_eip" "eip" {
   vpc      = true
 }
 
-resource "aws_route53_record" "bastion" {
+resource "aws_route53_record" "dns" {
   count   = length(var.route53_record) > 0 ? 1 : 0
   zone_id = var.hosted_zone_id
   name    = "${var.route53_record}.${var.hosted_zone_name}"
