@@ -73,9 +73,8 @@ module "ec2" {
 }
 
 module "ebs_backups" {
-  count   = var.backup_volumes == true ? 1 : 0
-  source  = "lgallard/backup/aws"
-  version = " ~> 0.1.2"
+  enabled = var.backup_volumes == true ? 1 : 0
+  source  = "git::https://github.com/odise/terraform-aws-backup?ref=master"
   # Plan
   plan_name = var.instance_name
   # Multiple rules using a list of maps
