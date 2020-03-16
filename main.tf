@@ -62,7 +62,7 @@ module "ec2" {
     },
   ]
 
-  ebs_block_device = var.ebs_block_device
+  # ebs_block_device = var.ebs_block_device
 
   tags = module.instance_tags.tags
   volume_tags = merge(module.volume_tags.tags,
@@ -72,9 +72,34 @@ module "ec2" {
   )
 }
 
+resource "aws_ebs_volume" "default" {
+  count             = length(var.ebs_block_device)
+  availability_zone = data.aws_subnet.selected.availability_zone
+  size              = var.ebs_block_device[count.index].volume_size
+  iops              = var.ebs_block_device[count.index].volume_type == "io1" ? var.ebs_block_device[count.index].iops : "0"
+  type              = var.ebs_block_device[count.index].volume_type
+  encrypted         = lookup(var.ebs_block_device[count.index], "encrypted", null)
+  kms_key_id        = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
+  snapshot_id       = lookup(var.ebs_block_device[count.index], "snapshot_id", null)
+  tags = merge(module.volume_tags.tags,
+    {
+      BackupTag = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
+    }
+  )
+}
+
+resource "aws_volume_attachment" "default" {
+  count       = length(var.ebs_block_device)
+  device_name = var.ebs_block_device[count.index].device_name
+  volume_id   = aws_ebs_volume.default.*.id[count.index]
+  instance_id = module.ec2.id[0]
+}
+
 module "ebs_backups" {
+  enabled = var.backup_volumes
+
   source  = "lgallard/backup/aws"
-  version = " ~> 0.1.2"
+  version = "0.2.0"
   # Plan
   plan_name = var.instance_name
   # Multiple rules using a list of maps
@@ -116,7 +141,7 @@ resource "aws_eip" "eip" {
   vpc      = true
 }
 
-resource "aws_route53_record" "bastion" {
+resource "aws_route53_record" "dns" {
   count   = length(var.route53_record) > 0 ? 1 : 0
   zone_id = var.hosted_zone_id
   name    = "${var.route53_record}.${var.hosted_zone_name}"
