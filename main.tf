@@ -72,10 +72,6 @@ module "ec2" {
   )
 }
 
-data "aws_subnet" "selected" {
-  id = var.subnet_id
-}
-
 resource "aws_ebs_volume" "default" {
   count             = length(var.ebs_block_device)
   availability_zone = data.aws_subnet.selected.availability_zone
@@ -101,7 +97,9 @@ resource "aws_volume_attachment" "default" {
 
 module "ebs_backups" {
   enabled = var.backup_volumes
-  source  = "git::https://github.com/odise/terraform-aws-backup?ref=master"
+
+  source  = "lgallard/backup/aws"
+  version = "0.2.0"
   # Plan
   plan_name = var.instance_name
   # Multiple rules using a list of maps

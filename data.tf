@@ -1,3 +1,3 @@
-data "aws_kms_key" "ebs" {
-  key_id = "alias/aws/ebs"
+data "aws_subnet" "selected" {
+  id = var.subnet_id
 }
