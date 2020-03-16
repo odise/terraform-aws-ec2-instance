@@ -62,7 +62,7 @@ module "ec2" {
     },
   ]
 
-  ebs_block_device = var.ebs_block_device
+  # ebs_block_device = var.ebs_block_device
 
   tags = module.instance_tags.tags
   volume_tags = merge(module.volume_tags.tags,
@@ -72,8 +72,35 @@ module "ec2" {
   )
 }
 
+data "aws_subnet" "selected" {
+  id = var.subnet_id
+}
+
+resource "aws_ebs_volume" "default" {
+  count             = length(var.ebs_block_device)
+  availability_zone = data.aws_subnet.selected.availability_zone
+  size              = var.ebs_block_device[count.index].volume_size
+  iops              = var.ebs_block_device[count.index].volume_type == "io1" ? var.ebs_block_device[count.index].iops : "0"
+  type              = var.ebs_block_device[count.index].volume_type
+  encrypted         = lookup(var.ebs_block_device[count.index], "encrypted", null)
+  kms_key_id        = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
+  snapshot_id       = lookup(var.ebs_block_device[count.index], "snapshot_id", null)
+  tags = merge(module.volume_tags.tags,
+    {
+      BackupTag = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
+    }
+  )
+}
+
+resource "aws_volume_attachment" "default" {
+  count       = length(var.ebs_block_device)
+  device_name = var.ebs_block_device[count.index].device_name
+  volume_id   = aws_ebs_volume.default.*.id[count.index]
+  instance_id = module.ec2.id[0]
+}
+
 module "ebs_backups" {
-  enabled = var.backup_volumes == true ? 1 : 0
+  enabled = var.backup_volumes
   source  = "git::https://github.com/odise/terraform-aws-backup?ref=master"
   # Plan
   plan_name = var.instance_name

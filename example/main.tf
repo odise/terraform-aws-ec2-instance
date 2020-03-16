@@ -1,0 +1,72 @@
+locals {
+  vpc_cidr     = "172.16.8.0/21"
+  subnet_masks = ["172.16.8.0/23", "172.16.10.0/23", "172.16.12.0/23"]
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+data "aws_kms_key" "ebs" {
+  key_id = "alias/aws/ebs"
+}
+
+module "vpc" {
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=v2.23.0"
+
+  name                 = "dev"
+  cidr                 = local.vpc_cidr
+  azs                  = data.aws_availability_zones.available.names
+  public_subnets       = local.subnet_masks
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+  enable_nat_gateway   = false
+  enable_ipv6          = true
+}
+
+module ec2 {
+  source = "../"
+
+  project_namespace = "ec2"
+  project_stage     = "dev"
+  instance_name     = "testinstance"
+  #   ami               = "ami-0b8016313c191b22b"
+  ami                     = "ami-076a07c7603a6986b"
+  instance_type           = "t3.micro"
+  disable_api_termination = "false"
+  root_block_device_size  = 100
+  ebs_optimized           = false
+  ebs_block_device = [
+    {
+      device_name = "/dev/sdb"
+      volume_type = "gp2"
+      volume_size = 1500
+      iops        = 4500
+      encrypted   = true
+      kms_key_id  = data.aws_kms_key.ebs.arn
+      snapshot_id = "snap-075e02f0c4d0c9ecf"
+    },
+    {
+      device_name = "/dev/sdf"
+      volume_type = "gp2"
+      volume_size = 1500
+      iops        = 4500
+      encrypted   = true
+      kms_key_id  = data.aws_kms_key.ebs.arn
+      snapshot_id = "snap-001ff7b4c4a3beffd"
+    }
+  ]
+  backup_volumes = false
+  subnet_id      = module.vpc.public_subnets[0]
+  # private_ip  =
+  # vpc_security_group_ids  =
+  associate_public_ip_address = true
+  # key_name  =
+  # iam_instance_profile  =
+  assign_eip = false
+  # ebs_kms_key_arn  =
+
+  instance_tags = { TAG1 = "Value" }
+  volume_tags   = { VOLUME_TAG = "Value" }
+  # backup_tags  =
+}
