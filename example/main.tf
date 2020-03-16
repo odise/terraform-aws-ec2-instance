@@ -11,6 +11,11 @@ data "aws_kms_key" "ebs" {
   key_id = "alias/aws/ebs"
 }
 
+data "aws_security_group" "selected" {
+  name   = "default"
+  vpc_id = module.vpc.vpc_id
+}
+
 module "vpc" {
   source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=v2.23.0"
 
@@ -33,6 +38,7 @@ module ec2 {
   #   ami               = "ami-0b8016313c191b22b"
   ami                     = "ami-076a07c7603a6986b"
   instance_type           = "t3.micro"
+  vpc_security_group_ids  = [data.aws_security_group.selected.id]
   disable_api_termination = "false"
   root_block_device_size  = 100
   ebs_optimized           = false
@@ -56,15 +62,15 @@ module ec2 {
       snapshot_id = "snap-001ff7b4c4a3beffd"
     }
   ]
-  backup_volumes = false
+  backup_volumes = true
   subnet_id      = module.vpc.public_subnets[0]
   # private_ip  =
   # vpc_security_group_ids  =
   associate_public_ip_address = true
   # key_name  =
   # iam_instance_profile  =
-  assign_eip = false
-  # ebs_kms_key_arn  =
+  assign_eip      = false
+  ebs_kms_key_arn = data.aws_kms_key.ebs.arn
 
   instance_tags = { TAG1 = "Value" }
   volume_tags   = { VOLUME_TAG = "Value" }
