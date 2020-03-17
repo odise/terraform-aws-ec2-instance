@@ -92,3 +92,9 @@ output root_block_device_volume_ids {
 output ebs_block_device_volume_ids {
   value = module.ec2.ebs_block_device_volume_ids
 }
+output eip {
+  value = module.ec2.eip
+}
+output fqdn {
+  value = module.ec2.fqdn
+}

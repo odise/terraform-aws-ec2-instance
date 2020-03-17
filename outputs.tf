@@ -100,3 +100,10 @@ output "backup_plan_version" {
   description = "Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan"
   value       = module.ebs_backups.plan_version
 }
+
+output eip {
+  value = var.assign_eip == true ? join("", aws_eip.eip.*.public_ip) : ""
+}
+output fqdn {
+  value = length(var.route53_record) > 0 ? join("", aws_route53_record.dns.*.fqdn) : ""
+}
