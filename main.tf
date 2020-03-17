@@ -65,6 +65,7 @@ module "ec2" {
   # ebs_block_device = var.ebs_block_device
 
   tags = module.instance_tags.tags
+  # this is causing prolems due to https://github.com/terraform-providers/terraform-provider-aws/issues/729
   volume_tags = merge(module.volume_tags.tags,
     {
       BackupTag = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
