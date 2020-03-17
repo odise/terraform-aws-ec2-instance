@@ -70,11 +70,6 @@ module "ec2" {
       BackupTag = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
     }
   )
-  lifecycle {
-    ignore_changes = [
-      volume_tags,
-    ]
-  }
 }
 
 resource "aws_ebs_volume" "default" {
