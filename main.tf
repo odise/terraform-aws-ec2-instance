@@ -70,6 +70,11 @@ module "ec2" {
       BackupTag = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
     }
   )
+  lifecycle {
+    ignore_changes = [
+      volume_tags,
+    ]
+  }
 }
 
 resource "aws_ebs_volume" "default" {
@@ -86,7 +91,7 @@ resource "aws_ebs_volume" "default" {
       BackupTag   = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
       device_name = var.ebs_block_device[count.index].device_name
       instance_id = module.ec2.id[0]
-      count       = length(var.ebs_block_device)
+      count       = count.index
     }
   )
 }
