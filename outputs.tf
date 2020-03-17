@@ -55,12 +55,12 @@ output "instance_state" {
 
 output "root_block_device_volume_ids" {
   description = "List of volume IDs of root block devices of instances"
-  value       = module.ec2.root_block_device_volume_ids
+  value       = flatten(module.ec2.root_block_device_volume_ids)
 }
 
 output "ebs_block_device_volume_ids" {
   description = "List of volume IDs of EBS block devices of instances"
-  value       = module.ec2.ebs_block_device_volume_ids
+  value       = aws_ebs_volume.default.*.id
 }
 
 output "instance_tags" {
@@ -100,8 +100,3 @@ output "backup_plan_version" {
   description = "Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan"
   value       = module.ebs_backups.plan_version
 }
-
-# output ebs_block_device_volume_ids {
-#   description = "Attached EBS volume IDs."
-#   value = 
-# }

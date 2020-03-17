@@ -50,7 +50,7 @@ module ec2 {
       iops        = 4500
       encrypted   = true
       kms_key_id  = data.aws_kms_key.ebs.arn
-      snapshot_id = "snap-075e02f0c4d0c9ecf"
+      snapshot_id = "snap-02219b69a9c701ac1"
     },
     {
       device_name = "/dev/sdf"
@@ -59,10 +59,10 @@ module ec2 {
       iops        = 4500
       encrypted   = true
       kms_key_id  = data.aws_kms_key.ebs.arn
-      snapshot_id = "snap-001ff7b4c4a3beffd"
+      snapshot_id = "snap-0da6fe8ed2f40e959"
     }
   ]
-  backup_volumes = true
+  backup_volumes = false
   subnet_id      = module.vpc.public_subnets[0]
   # private_ip  =
   # vpc_security_group_ids  =
@@ -75,4 +75,20 @@ module ec2 {
   instance_tags = { TAG1 = "Value" }
   volume_tags   = { VOLUME_TAG = "Value" }
   # backup_tags  =
+}
+
+output public_ip {
+  value = module.ec2.public_ip
+}
+output private_ip {
+  value = module.ec2.private_ip
+}
+# output block_device_mappings {
+#   value = "${jsonencode(data.aws_ami.ami.block_device_mappings)}"
+# }
+output root_block_device_volume_ids {
+  value = module.ec2.root_block_device_volume_ids
+}
+output ebs_block_device_volume_ids {
+  value = module.ec2.ebs_block_device_volume_ids
 }
