@@ -100,3 +100,8 @@ output "backup_plan_version" {
   description = "Unique, randomly generated, Unicode, UTF-8 encoded string that serves as the version ID of the backup plan"
   value       = module.ebs_backups.plan_version
 }
+
+# output ebs_block_device_volume_ids {
+#   description = "Attached EBS volume IDs."
+#   value = 
+# }
