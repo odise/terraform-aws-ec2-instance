@@ -67,8 +67,7 @@ module "ec2" {
   tags = module.instance_tags.tags
   volume_tags = merge(module.volume_tags.tags,
     {
-      BackupTag   = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
-      instance_id = module.ec2.id[0]
+      BackupTag = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
     }
   )
 }
