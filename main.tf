@@ -35,6 +35,12 @@ module "backup_tags" {
   tags = var.backup_tags
 }
 
+
+module "ebs_optimized" {
+  source        = "terraform-aws-modules/ebs-optimized/aws"
+  instance_type = var.instance_type
+}
+
 module "ec2" {
   source                  = "terraform-aws-modules/ec2-instance/aws"
   version                 = "~> 2.0"
@@ -51,7 +57,7 @@ module "ec2" {
   key_name                    = var.key_name
   iam_instance_profile        = var.iam_instance_profile
   user_data_base64            = base64encode(var.user_data)
-  ebs_optimized               = var.ebs_optimized
+  ebs_optimized               = var.ebs_optimized == null ? module.ebs_optimized.answer : var.ebs_optimized
 
   root_block_device = [
     {

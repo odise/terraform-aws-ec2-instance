@@ -37,11 +37,11 @@ module ec2 {
   instance_name     = "testinstance"
   #   ami               = "ami-0b8016313c191b22b"
   ami                     = "ami-076a07c7603a6986b"
-  instance_type           = "t3.micro"
+  instance_type           = "m1.large"
   vpc_security_group_ids  = [data.aws_security_group.selected.id]
   disable_api_termination = "false"
   root_block_device_size  = 100
-  ebs_optimized           = false
+  # ebs_optimized           = false
   ebs_block_device = [
     {
       device_name = "/dev/sdb"
