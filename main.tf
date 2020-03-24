@@ -157,5 +157,5 @@ resource "aws_route53_record" "dns" {
   name    = "${var.route53_record}.${var.hosted_zone_name}"
   type    = "A"
   ttl     = "300"
-  records = [aws_eip.eip[0].public_ip]
+  records = var.assign_eip == true ? [aws_eip.eip[0].public_ip] : var.associate_public_ip_address == true ? module.ec2.public_ip : module.ec2.private_ip
 }
