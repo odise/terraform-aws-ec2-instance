@@ -150,6 +150,7 @@ resource "aws_eip" "eip" {
   count    = var.assign_eip == true ? 1 : 0
   instance = module.ec2.id[0]
   vpc      = true
+  tags     = module.instance_tags.tags
 }
 
 resource "aws_route53_record" "dns" {
