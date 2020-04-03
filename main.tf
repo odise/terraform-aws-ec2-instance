@@ -58,6 +58,7 @@ module "ec2" {
   iam_instance_profile        = var.iam_instance_profile
   user_data_base64            = base64encode(var.user_data)
   ebs_optimized               = var.ebs_optimized == null ? module.ebs_optimized.answer : var.ebs_optimized
+  cpu_credits                 = var.cpu_credits
 
   root_block_device = [
     {

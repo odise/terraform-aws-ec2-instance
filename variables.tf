@@ -23,6 +23,11 @@ variable route53_record { default = "" }
 variable assign_eip { default = false }
 variable ebs_kms_key_arn { default = "" }
 variable user_data { default = "" }
+variable cpu_credits {
+  type        = string
+  default     = "standard"
+  description = "T2/T3 Unlimited configuration. Can be `standard` and `unlimited`."
+}
 
 variable instance_tags { default = {} }
 variable volume_tags { default = {} }
