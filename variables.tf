@@ -7,6 +7,7 @@ variable disable_api_termination { default = true }
 variable root_block_device_size { default = 20 }
 variable ebs_optimized { default = null }
 variable ebs_block_device { default = [] }
+variable buildin_ebs_block_device { default = [] }
 variable backup_volumes { default = true }
 variable backup_volumes_schedule { default = "cron(0 1 * * ? *)" }
 variable backup_volumes_delete_after { default = 30 }

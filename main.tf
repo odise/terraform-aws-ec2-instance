@@ -68,7 +68,7 @@ module "ec2" {
     },
   ]
 
-  # ebs_block_device = var.ebs_block_device
+  ebs_block_device = var.buildin_ebs_block_device
 
   tags = module.instance_tags.tags
   # this is causing prolems due to https://github.com/terraform-providers/terraform-provider-aws/issues/729
