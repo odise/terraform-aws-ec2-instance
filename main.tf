@@ -43,8 +43,8 @@ module "ebs_optimized" {
 
 locals {
   booltranslation = {
-    "0"     = true
-    "1"     = false
+    "0"     = false
+    "1"     = true
     "true"  = true
     "false" = false
   }
