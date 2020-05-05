@@ -41,6 +41,14 @@ module "ebs_optimized" {
   instance_type = var.instance_type
 }
 
+locals {
+  booltranslation = {
+    "0"     = true
+    "1"     = false
+    "true"  = true
+    "false" = false
+  }
+}
 module "ec2" {
   source                  = "terraform-aws-modules/ec2-instance/aws"
   version                 = "~> 2.0"
@@ -60,7 +68,7 @@ module "ec2" {
   # we use the string representation of `module.ebs_optimized.answer` because it will answer with 0 if the instance class is 
   # unknown to the module. "0" and "false" become false and "1" and "true" become true. The behavior of conversion in this 
   # direction (string to boolean) will not change in future Terraform versions. 
-  ebs_optimized = var.ebs_optimized == null ? "${module.ebs_optimized.answer}" : var.ebs_optimized
+  ebs_optimized = var.ebs_optimized == null ? local.booltranslation[tostring(module.ebs_optimized.answer)] : var.ebs_optimized
   cpu_credits   = var.cpu_credits
 
   root_block_device = [
