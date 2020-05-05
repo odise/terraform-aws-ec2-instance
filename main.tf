@@ -57,8 +57,11 @@ module "ec2" {
   key_name                    = var.key_name
   iam_instance_profile        = var.iam_instance_profile
   user_data_base64            = base64encode(var.user_data)
-  ebs_optimized               = var.ebs_optimized == null ? module.ebs_optimized.answer : var.ebs_optimized
-  cpu_credits                 = var.cpu_credits
+  # we use the string representation of `module.ebs_optimized.answer` because it will answer with 0 if the instance class is 
+  # unknown to the module. "0" and "false" become false and "1" and "true" become true. The behavior of conversion in this 
+  # direction (string to boolean) will not change in future Terraform versions. 
+  ebs_optimized = var.ebs_optimized == null ? "${module.ebs_optimized.answer}" : var.ebs_optimized
+  cpu_credits   = var.cpu_credits
 
   root_block_device = [
     {
