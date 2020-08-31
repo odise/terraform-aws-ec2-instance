@@ -73,10 +73,12 @@ module "ec2" {
 
   root_block_device = [
     {
-      volume_type = "gp2"
-      volume_size = var.root_block_device_size
-      encrypted   = length(var.ebs_kms_key_arn) > 0 ? true : false
-      kms_key_id  = var.ebs_kms_key_arn
+      volume_type           = "gp2"
+      volume_size           = var.root_block_device_size
+      encrypted             = length(var.ebs_kms_key_arn) > 0 ? true : false
+      kms_key_id            = var.ebs_kms_key_arn
+      delete_on_termination = var.root_block_device_delete_on_termination
+      iops                  = var.root_block_device_iops
     },
   ]
 
@@ -92,14 +94,16 @@ module "ec2" {
 }
 
 resource "aws_ebs_volume" "default" {
-  count             = length(var.ebs_block_device)
-  availability_zone = data.aws_subnet.selected.availability_zone
-  size              = var.ebs_block_device[count.index].volume_size
-  iops              = var.ebs_block_device[count.index].volume_type == "io1" ? var.ebs_block_device[count.index].iops : "0"
-  type              = var.ebs_block_device[count.index].volume_type
-  encrypted         = lookup(var.ebs_block_device[count.index], "encrypted", null)
-  kms_key_id        = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
-  snapshot_id       = lookup(var.ebs_block_device[count.index], "snapshot_id", null)
+  count                 = length(var.ebs_block_device)
+  availability_zone     = data.aws_subnet.selected.availability_zone
+  size                  = var.ebs_block_device[count.index].volume_size
+  iops                  = var.ebs_block_device[count.index].volume_type == "io1" ? var.ebs_block_device[count.index].iops : "0"
+  type                  = var.ebs_block_device[count.index].volume_type
+  encrypted             = lookup(var.ebs_block_device[count.index], "encrypted", null)
+  kms_key_id            = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
+  snapshot_id           = lookup(var.ebs_block_device[count.index], "snapshot_id", null)
+  delete_on_termination = lookup(var.ebs_block_device[count.index], "delete_on_termination", null)
+  iops                  = lookup(var.ebs_block_device[count.index], "iops", null)
   tags = merge(module.volume_tags.tags,
     {
       BackupTag   = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
