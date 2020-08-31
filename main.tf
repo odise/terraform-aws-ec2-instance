@@ -103,7 +103,6 @@ resource "aws_ebs_volume" "default" {
   kms_key_id            = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
   snapshot_id           = lookup(var.ebs_block_device[count.index], "snapshot_id", null)
   delete_on_termination = lookup(var.ebs_block_device[count.index], "delete_on_termination", null)
-  iops                  = lookup(var.ebs_block_device[count.index], "iops", null)
   tags = merge(module.volume_tags.tags,
     {
       BackupTag   = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
