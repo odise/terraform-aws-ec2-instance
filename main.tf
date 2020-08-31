@@ -94,15 +94,14 @@ module "ec2" {
 }
 
 resource "aws_ebs_volume" "default" {
-  count                 = length(var.ebs_block_device)
-  availability_zone     = data.aws_subnet.selected.availability_zone
-  size                  = var.ebs_block_device[count.index].volume_size
-  iops                  = var.ebs_block_device[count.index].volume_type == "io1" ? var.ebs_block_device[count.index].iops : "0"
-  type                  = var.ebs_block_device[count.index].volume_type
-  encrypted             = lookup(var.ebs_block_device[count.index], "encrypted", null)
-  kms_key_id            = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
-  snapshot_id           = lookup(var.ebs_block_device[count.index], "snapshot_id", null)
-  delete_on_termination = lookup(var.ebs_block_device[count.index], "delete_on_termination", null)
+  count             = length(var.ebs_block_device)
+  availability_zone = data.aws_subnet.selected.availability_zone
+  size              = var.ebs_block_device[count.index].volume_size
+  iops              = var.ebs_block_device[count.index].volume_type == "io1" ? var.ebs_block_device[count.index].iops : "0"
+  type              = var.ebs_block_device[count.index].volume_type
+  encrypted         = lookup(var.ebs_block_device[count.index], "encrypted", null)
+  kms_key_id        = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
+  snapshot_id       = lookup(var.ebs_block_device[count.index], "snapshot_id", null)
   tags = merge(module.volume_tags.tags,
     {
       BackupTag   = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
