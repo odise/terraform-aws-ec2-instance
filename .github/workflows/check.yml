@@ -27,3 +27,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_REGION: eu-central-1
+      - name: tflint
+          uses: reviewdog/action-tflint@master
+          with:
+            github_token: ${{ secrets.github_token }}
+            fail_on_error: "true" # Optional. Fail action if errors are found
+            filter_mode: "nofilter" # Optional. Check all files, not just the diff
+            flags: "--module" # Optional. Add custom tflint flags
