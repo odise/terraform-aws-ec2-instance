@@ -31,7 +31,7 @@
 | disable\_api\_termination | n/a | `bool` | `true` | no |
 | ebs\_block\_device | n/a | `list` | `[]` | no |
 | ebs\_kms\_key\_arn | n/a | `string` | `""` | no |
-| ebs\_optimized | n/a | `any` | `null` | no |
+| ebs\_optimized | n/a | `bool` | `null` | no |
 | hosted\_zone\_id | n/a | `string` | `""` | no |
 | hosted\_zone\_name | n/a | `string` | `""` | no |
 | iam\_instance\_profile | n/a | `string` | `""` | no |
