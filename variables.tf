@@ -46,6 +46,7 @@ variable root_block_device_iops {
 variable ebs_optimized {
   description = ""
   default     = null
+  type        = bool
 }
 variable ebs_block_device {
   description = ""
