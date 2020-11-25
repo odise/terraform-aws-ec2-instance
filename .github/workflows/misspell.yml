@@ -1,9 +1,7 @@
 ---
 name: misspell
 on:
-  push:
-    branches:
-      - master
+  - push
 
 jobs:
   misspell:

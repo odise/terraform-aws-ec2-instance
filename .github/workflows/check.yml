@@ -1,6 +1,6 @@
 name: 'Terraform GitHub Actions'
 on:
-  - pull_request
+  - push
 jobs:
   terraform:
     name: 'Terraform'
@@ -34,3 +34,17 @@ jobs:
           fail_on_error: "true" # Optional. Fail action if errors are found
           filter_mode: "nofilter" # Optional. Check all files, not just the diff
           flags: "--module" # Optional. Add custom tflint flags
+  docs:
+    runs-on: Ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Render terraform docs inside the USAGE.md and push changes back to PR branch
+        uses: Dirrk/terraform-docs@v1.0.8
+        with:
+          tf_docs_working_dir: .
+          tf_docs_output_file: README.md
+          tf_docs_output_method: inject
+          tf_docs_git_push: 'true'
