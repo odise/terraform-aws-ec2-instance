@@ -1,3 +1,6 @@
+# terraform-aws-ec2-instance
+
+This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, Elastic IP and Route53 DNS record.
 # Usage
 <!--- BEGIN_TF_DOCS --->
 ## Requirements
