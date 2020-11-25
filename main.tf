@@ -139,7 +139,7 @@ module "ebs_backups" {
         delete_after       = var.backup_volumes_delete_after
       },
       recovery_point_tags = {
-        Environment = "${var.project_stage}"
+        Environment = var.project_stage
       }
     },
   ]
