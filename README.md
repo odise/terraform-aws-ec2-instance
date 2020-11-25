@@ -43,7 +43,7 @@
 | project\_namespace | n/a | `string` | `"terraform-aws-ec2-instance"` | no |
 | project\_stage | n/a | `string` | `"dev"` | no |
 | root\_block\_device\_delete\_on\_termination | n/a | `bool` | `true` | no |
-| root\_block\_device\_iops | n/a | `any` | `null` | no |
+| root\_block\_device\_iops | n/a | `number` | `null` | no |
 | root\_block\_device\_size | n/a | `number` | `20` | no |
 | route53\_record | n/a | `string` | `""` | no |
 | subnet\_id | n/a | `string` | `""` | no |
