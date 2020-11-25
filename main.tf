@@ -6,7 +6,7 @@ resource "random_password" "backuptag" {
 }
 
 module "instance_tags" {
-  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.16.0"
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.21.0"
   namespace = var.project_namespace
   stage     = var.project_stage
   name      = var.instance_name
@@ -16,7 +16,7 @@ module "instance_tags" {
 }
 
 module "volume_tags" {
-  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.16.0"
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.21.0"
   namespace = var.project_namespace
   stage     = var.project_stage
   name      = var.instance_name
@@ -26,7 +26,7 @@ module "volume_tags" {
 }
 
 module "backup_tags" {
-  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.16.0"
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.21.0"
   namespace = var.project_namespace
   stage     = var.project_stage
   name      = var.instance_name
@@ -139,7 +139,7 @@ module "ebs_backups" {
         delete_after       = var.backup_volumes_delete_after
       },
       recovery_point_tags = {
-        Environment = "${var.project_stage}"
+        Environment = var.project_stage
       }
     },
   ]
