@@ -65,8 +65,12 @@ module ec2 {
   backup_buildin_volumes = true
   backup_ami             = true
   # lets test this every hour
-  backup_volumes_schedule = "cron(40 * * * ? *)"
-  subnet_id               = module.vpc.public_subnets[0]
+  backup_volumes_schedule          = "cron(40 * * * ? *)"
+  backup_volumes_completion_window = 120
+  backup_volumes_start_window      = 20
+  backup_volumes_delete_after      = 2
+
+  subnet_id = module.vpc.public_subnets[0]
   # private_ip  =
   # vpc_security_group_ids  =
   associate_public_ip_address = true
