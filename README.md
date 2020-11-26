@@ -25,14 +25,14 @@ This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, 
 | ami | n/a | `string` | `"ami-0555c8a4c6ccc7aef"` | no |
 | assign\_eip | n/a | `bool` | `false` | no |
 | associate\_public\_ip\_address | n/a | `bool` | `false` | no |
+| backup\_buildin\_volumes | Set this `true` to backup all EBS volumes that facilitate the under laying AMI. Consider to use `backup_ami` instead. | `bool` | `true` | no |
 | backup\_tags | n/a | `map` | `{}` | no |
-| backup\_volumes | n/a | `bool` | `true` | no |
 | backup\_volumes\_delete\_after | n/a | `number` | `30` | no |
 | backup\_volumes\_schedule | n/a | `string` | `"cron(0 1 * * ? *)"` | no |
-| buildin\_ebs\_block\_device | EBS block devices build into the under laying AMI to be attach to the instance. Block device configurations only apply on resource creation. | <pre>list(object({<br>    volume_size = number<br>    iops        = number<br>    volume_type = string<br>    encrypted   = bool<br>    kms_key_id  = string<br>    snapshot_id = string<br>    device_name = string<br>    })<br>  )</pre> | `[]` | no |
+| buildin\_ebs\_block\_device | EBS block devices build into the under laying AMI to be attach to the instance. Block device configurations only apply on resource creation. | `list(map(string))` | `[]` | no |
 | cpu\_credits | T2/T3 Unlimited configuration. Can be `standard` and `unlimited`. | `string` | `"standard"` | no |
 | disable\_api\_termination | n/a | `bool` | `true` | no |
-| ebs\_block\_device | This is following the parameters of `ebs_block_device` from the `terraform-aws-modules/ec2-instance/aws` module.<br>Extra parameter:<br>- `backup_volume` boolean (Optional, default is false): set whether or not to backup the volume by setting.<br>- `device_name` string:  (Required) The name of the device to mount. | <pre>list(object({<br>    volume_size   = number<br>    iops          = number<br>    volume_type   = string<br>    encrypted     = bool<br>    kms_key_id    = string<br>    snapshot_id   = string<br>    device_name   = string<br>    backup_volume = bool<br>    })<br>  )</pre> | `[]` | no |
+| ebs\_block\_device | This is following the parameters of `ebs_block_device` from the `terraform-aws-modules/ec2-instance/aws` module.<br>Extra parameter:<br>- `backup_volume` boolean (Optional, default is false): set whether or not to backup the volume by setting.<br>- `device_name` string:  (Required) The name of the device to mount. | `list(map(string))` | `[]` | no |
 | ebs\_kms\_key\_arn | n/a | `string` | `""` | no |
 | ebs\_optimized | n/a | `bool` | `null` | no |
 | hosted\_zone\_id | n/a | `string` | `""` | no |
@@ -49,7 +49,7 @@ This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, 
 | root\_block\_device\_iops | n/a | `number` | `null` | no |
 | root\_block\_device\_size | n/a | `number` | `20` | no |
 | route53\_record | n/a | `string` | `""` | no |
-| subnet\_id | n/a | `string` | `""` | no |
+| subnet\_id | variable backup\_ami { description = "Set to true to create an AMI backup." default     = false type        = bool } | `string` | `""` | no |
 | user\_data | n/a | `string` | `""` | no |
 | volume\_tags | n/a | `map` | `{}` | no |
 | vpc\_security\_group\_ids | n/a | `list` | `[]` | no |
