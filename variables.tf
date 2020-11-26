@@ -14,17 +14,16 @@ variable instance_name {
   type        = string
 }
 variable ami {
-  description = ""
-  default     = "ami-0555c8a4c6ccc7aef"
+  description = "ID of AMI to use for the instance."
   type        = string
 }
 variable instance_type {
-  description = ""
-  default     = "c4.large"
+  description = "The type of instance to start"
+  default     = "t2.medium"
   type        = string
 }
 variable disable_api_termination {
-  description = ""
+  description = "If true, enables EC2 Instance Termination Protection."
   default     = true
   type        = bool
 }
@@ -104,32 +103,32 @@ variable backup_ami {
   type        = bool
 }
 variable subnet_id {
-  description = ""
+  description = "The VPC Subnet ID to launch in."
   default     = ""
   type        = string
 }
 variable private_ip {
-  description = ""
+  description = "Private IP address to associate with the instance in a VPC."
   default     = ""
   type        = string
 }
 variable vpc_security_group_ids {
-  description = ""
+  description = "A list of security group IDs to associate with"
   default     = []
-  type        = list
+  type        = list(string)
 }
 variable associate_public_ip_address {
-  description = ""
+  description = "If true, the EC2 instance will have associated public IP address."
   default     = false
   type        = bool
 }
 variable key_name {
-  description = ""
+  description = "The SSH key name to use for the instance."
   default     = ""
   type        = string
 }
 variable iam_instance_profile {
-  description = ""
+  description = "The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile."
   default     = ""
   type        = string
 }
@@ -159,7 +158,7 @@ variable ebs_kms_key_arn {
   type        = string
 }
 variable user_data {
-  description = ""
+  description = "The user data to provide when launching the instance."
   default     = ""
   type        = string
 }
