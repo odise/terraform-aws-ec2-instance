@@ -9,7 +9,7 @@ variable project_stage {
   type        = string
 }
 variable instance_name {
-  description = ""
+  description = "The name of the EC2 instance."
   default     = "ec2-instance"
   type        = string
 }
@@ -27,23 +27,28 @@ variable disable_api_termination {
   default     = true
   type        = bool
 }
+variable "root_block_device_type" {
+  description = "(Optional) The type of volume. Can be `standard`, `gp2`, `io1`, `io2`, `sc1`, or `st1`. (Default: `gp2`)."
+  default     = "gp2"
+  type        = string
+}
 variable root_block_device_size {
-  description = ""
+  description = "(Optional) The size of the volume in gigabytes (GiB)."
   default     = 20
   type        = number
 }
 variable root_block_device_delete_on_termination {
-  description = ""
+  description = "(Optional) Whether the volume should be destroyed on instance termination (Default: true)."
   default     = true
   type        = bool
 }
 variable root_block_device_iops {
-  description = ""
+  description = "(Optional) The amount of provisioned IOPS. This is only valid for volume_type of `io1`/`io2`, and must be specified if using that type."
   default     = null
   type        = number
 }
 variable ebs_optimized {
-  description = ""
+  description = "(Optional) If true, the launched EC2 instance will be EBS-optimized. If not set module `terraform-aws-modules/terraform-aws-ebs-optimized` will determine the value."
   default     = null
   type        = bool
 }
@@ -133,27 +138,27 @@ variable iam_instance_profile {
   type        = string
 }
 variable hosted_zone_name {
-  description = ""
+  description = "(Required if `route53_record` is set) The name of the hosted zone to contain this record."
   default     = ""
   type        = string
 }
 variable hosted_zone_id {
-  description = ""
+  description = "(Required if `route53_record` is set) The ID of the hosted zone to contain this record."
   default     = ""
   type        = string
 }
 variable route53_record {
-  description = ""
+  description = "The name of the record."
   default     = ""
   type        = string
 }
 variable assign_eip {
-  description = ""
+  description = "Whether or not to associate an elastic IP with this instance."
   default     = false
   type        = bool
 }
 variable ebs_kms_key_arn {
-  description = ""
+  description = "(Optional) Amazon Resource Name (ARN) of the KMS Key to use when encrypting the volume. Must be configured to perform drift detection."
   default     = ""
   type        = string
 }

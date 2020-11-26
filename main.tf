@@ -48,6 +48,7 @@ locals {
     "false" = false
   }
 }
+
 module "ec2" {
   source                  = "terraform-aws-modules/ec2-instance/aws"
   version                 = "~> 2.0"
@@ -72,7 +73,7 @@ module "ec2" {
 
   root_block_device = [
     {
-      volume_type           = "gp2"
+      volume_type           = var.root_block_device_type
       volume_size           = var.root_block_device_size
       encrypted             = length(var.ebs_kms_key_arn) > 0 ? true : false
       kms_key_id            = var.ebs_kms_key_arn
@@ -107,7 +108,7 @@ resource "aws_ebs_volume" "default" {
   count                = length(var.ebs_block_device)
   availability_zone    = data.aws_subnet.selected.availability_zone
   size                 = var.ebs_block_device[count.index].volume_size
-  iops                 = var.ebs_block_device[count.index].volume_type == "io1" ? var.ebs_block_device[count.index].iops : "0"
+  iops                 = var.ebs_block_device[count.index].volume_type == "io1" || var.ebs_block_device[count.index].volume_type == "io2" ? var.ebs_block_device[count.index].iops : "0"
   type                 = var.ebs_block_device[count.index].volume_type
   encrypted            = lookup(var.ebs_block_device[count.index], "encrypted", null)
   kms_key_id           = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
