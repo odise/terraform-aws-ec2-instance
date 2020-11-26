@@ -14,5 +14,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           locale: "US"
           reporter: github-check
-          filter_mode: nofilter
           level: error
