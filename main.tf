@@ -1,8 +1,7 @@
 provider "random" {}
 
-resource "random_password" "backuptag" {
-  length  = 16
-  special = false
+resource "random_id" "backuptag" {
+  byte_length = 16
 }
 
 module "instance_tags" {
@@ -82,7 +81,6 @@ module "ec2" {
     },
   ]
 
-  #  ebs_block_device = var.buildin_ebs_block_device
   ebs_block_device = [for ebs_block_device in var.buildin_ebs_block_device :
     {
       delete_on_termination = lookup(ebs_block_device, "delete_on_termination", null)
@@ -100,7 +98,7 @@ module "ec2" {
   # this is causing prolems due to https://github.com/terraform-providers/terraform-provider-aws/issues/729
   volume_tags = merge(module.volume_tags.tags,
     {
-      BackupTag = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
+      BackupTag = var.backup_buildin_volumes == true ? random_id.backuptag.id : "n/a"
     }
   )
 }
@@ -117,8 +115,7 @@ resource "aws_ebs_volume" "default" {
   multi_attach_enabled = lookup(var.ebs_block_device[count.index], "multi_attach_enabled", null)
   tags = merge(module.volume_tags.tags,
     {
-      BackupTag   = lookup(var.ebs_block_device[count.index], "backup_volume", false) == true ? random_password.backuptag.result : "n/a"
-      instance_id = module.ec2.id[0]
+      BackupTag = lookup(var.ebs_block_device[count.index], "backup_volume", false) == "true" ? random_id.backuptag.id : "n/a"
     }
   )
 }
@@ -131,7 +128,7 @@ resource "aws_volume_attachment" "default" {
 }
 
 module "ebs_backups" {
-  enabled = var.backup_volumes
+  enabled = var.backup_buildin_volumes
 
   source  = "lgallard/backup/aws"
   version = "0.2.0"
@@ -171,7 +168,7 @@ module "ebs_backups" {
       selection_tag = {
         type  = "STRINGEQUALS"
         key   = "BackupTag"
-        value = random_password.backuptag.result
+        value = random_id.backuptag.id
       }
     }
   ]

@@ -56,34 +56,15 @@ Extra parameter:
 - `device_name` string:  (Required) The name of the device to mount.
 EOT
   default     = []
-  type = list(object({
-    volume_size   = number
-    iops          = number
-    volume_type   = string
-    encrypted     = bool
-    kms_key_id    = string
-    snapshot_id   = string
-    device_name   = string
-    backup_volume = bool
-    })
-  )
+  type        = list(map(string))
 }
 variable buildin_ebs_block_device {
   description = "EBS block devices build into the under laying AMI to be attach to the instance. Block device configurations only apply on resource creation."
   default     = []
-  type = list(object({
-    volume_size = number
-    iops        = number
-    volume_type = string
-    encrypted   = bool
-    kms_key_id  = string
-    snapshot_id = string
-    device_name = string
-    })
-  )
+  type        = list(map(string))
 }
-variable backup_volumes {
-  description = ""
+variable backup_buildin_volumes {
+  description = "Set this `true` to backup all EBS volumes that facilitate the under laying AMI. Consider to use `backup_ami` instead."
   default     = true
   type        = bool
 }
@@ -97,6 +78,11 @@ variable backup_volumes_delete_after {
   default     = 30
   type        = number
 }
+#variable backup_ami {
+#  description = "Set to true to create an AMI backup."
+#  default     = false
+#  type        = bool
+#}
 variable subnet_id {
   description = ""
   default     = ""

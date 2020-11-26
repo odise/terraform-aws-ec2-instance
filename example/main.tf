@@ -32,38 +32,37 @@ module "vpc" {
 module ec2 {
   source = "../"
 
-  project_namespace = "ec2"
-  project_stage     = "dev"
-  instance_name     = "testinstance"
-  #   ami               = "ami-0b8016313c191b22b"
-  ami                     = "ami-076a07c7603a6986b"
-  instance_type           = "m1.large"
+  project_namespace       = "ec2"
+  project_stage           = "dev"
+  instance_name           = "testinstance"
+  ami                     = var.ami
+  instance_type           = "m5.4xlarge"
   vpc_security_group_ids  = [data.aws_security_group.selected.id]
   disable_api_termination = "false"
   root_block_device_size  = 100
   # ebs_optimized           = false
   ebs_block_device = [
     {
-      device_name = "/dev/sdb"
-      volume_type = "gp2"
-      volume_size = 1500
-      iops        = 4500
-      encrypted   = true
-      kms_key_id  = data.aws_kms_key.ebs.arn
-      snapshot_id = "snap-02219b69a9c701ac1"
+      device_name   = "/dev/sdb"
+      volume_type   = "gp2"
+      volume_size   = 15
+      iops          = 4500
+      encrypted     = true
+      kms_key_id    = data.aws_kms_key.ebs.arn
+      backup_volume = true
     },
-    {
-      device_name = "/dev/sdf"
-      volume_type = "gp2"
-      volume_size = 1500
-      iops        = 4500
-      encrypted   = true
-      kms_key_id  = data.aws_kms_key.ebs.arn
-      snapshot_id = "snap-0da6fe8ed2f40e959"
-    }
   ]
-  backup_volumes = false
-  subnet_id      = module.vpc.public_subnets[0]
+  #  buildin_ebs_block_device = [
+  #    {
+  #      device_name = "/dev/sdg"
+  #      volume_type = "gp2"
+  #      volume_size = 40
+  #      encrypted   = true
+  #      kms_key_id  = data.aws_kms_key.ebs.arn
+  #    },
+  #  ]
+  backup_buildin_volumes = true
+  subnet_id              = module.vpc.public_subnets[0]
   # private_ip  =
   # vpc_security_group_ids  =
   associate_public_ip_address = true
@@ -77,24 +76,3 @@ module ec2 {
   # backup_tags  =
 }
 
-output public_ip {
-  value = module.ec2.public_ip
-}
-output private_ip {
-  value = module.ec2.private_ip
-}
-# output block_device_mappings {
-#   value = "${jsonencode(data.aws_ami.ami.block_device_mappings)}"
-# }
-output root_block_device_volume_ids {
-  value = module.ec2.root_block_device_volume_ids
-}
-output ebs_block_device_volume_ids {
-  value = module.ec2.ebs_block_device_volume_ids
-}
-output eip {
-  value = module.ec2.eip
-}
-output fqdn {
-  value = module.ec2.fqdn
-}
