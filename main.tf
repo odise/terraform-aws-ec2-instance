@@ -127,11 +127,33 @@ resource "aws_volume_attachment" "default" {
   instance_id = module.ec2.id[0]
 }
 
+locals {
+  backup_volumes         = contains(var.ebs_block_device[*].backup_volume, true)
+  backup_buildin_volumes = var.backup_buildin_volumes == true
+  backup_ami             = var.backup_ami
+  selection = concat(
+    local.backup_ami ? [{
+      name          = "ami_selection"
+      resources     = [module.ec2.arn[0]]
+      selection_tag = {}
+    }] : [],
+    local.backup_volumes || local.backup_buildin_volumes ? [{
+      name      = "tag_selection"
+      resources = []
+      selection_tag = {
+        type  = "STRINGEQUALS"
+        key   = "BackupTag"
+        value = random_id.backuptag.id
+      }
+    }] : []
+  )
+}
+
 module "ebs_backups" {
-  enabled = var.backup_buildin_volumes
+  enabled = local.backup_buildin_volumes || local.backup_ami || local.backup_volumes
 
   source  = "lgallard/backup/aws"
-  version = "0.2.0"
+  version = "0.5.0"
   # Plan
   plan_name = var.instance_name
   # Multiple rules using a list of maps
@@ -139,11 +161,11 @@ module "ebs_backups" {
     {
       name              = "Backup rule for ${module.instance_tags.id}"
       schedule          = var.backup_volumes_schedule
-      target_vault_name = "Default"
-      start_window      = 120
-      completion_window = 360
+      target_vault_name = var.backup_volumes_target_vault_name
+      start_window      = var.backup_volumes_start_window
+      completion_window = var.backup_volumes_completion_window
       lifecycle = {
-        cold_storage_after = 0
+        cold_storage_after = var.backup_volumes_cold_storage_after
         delete_after       = var.backup_volumes_delete_after
       },
       recovery_point_tags = {
@@ -152,26 +174,7 @@ module "ebs_backups" {
     },
   ]
 
-  #  dynamic "selection" {
-  #    for_each = length(lookup(element(local.selections, count.index), "selection_tag", {})) == 0 ? [] : [lookup(element(local.selections, count.index), "selection_tag", {})]
-  #    content {
-  #      type  = lookup(selection_tag.value, "type", null)
-  #      key   = lookup(selection_tag.value, "key", null)
-  #      value = lookup(selection_tag.value, "value", null)
-  #    }
-  #  }
-
-  selections = [
-    {
-      name      = "tag_selection"
-      resources = []
-      selection_tag = {
-        type  = "STRINGEQUALS"
-        key   = "BackupTag"
-        value = random_id.backuptag.id
-      }
-    }
-  ]
+  selections = local.selection
 
   tags = module.backup_tags.tags
 }

@@ -69,20 +69,40 @@ variable backup_buildin_volumes {
   type        = bool
 }
 variable backup_volumes_schedule {
-  description = ""
+  description = "A CRON expression specifying when AWS Backup initiates a backup job."
   default     = "cron(0 1 * * ? *)"
   type        = string
 }
 variable backup_volumes_delete_after {
-  description = ""
+  description = "Specifies the number of days after creation that a recovery point is deleted."
   default     = 30
   type        = number
 }
-#variable backup_ami {
-#  description = "Set to true to create an AMI backup."
-#  default     = false
-#  type        = bool
-#}
+variable backup_volumes_cold_storage_after {
+  description = "Specifies the number of days after creation that a recovery point is moved to cold storage"
+  default     = 0
+  type        = number
+}
+variable "backup_volumes_target_vault_name" {
+  description = "The name of a logical container where backups are stored."
+  default     = "Default"
+  type        = string
+}
+variable "backup_volumes_start_window" {
+  description = "The amount of time in minutes before beginning a backup."
+  default     = 120
+  type        = number
+}
+variable "backup_volumes_completion_window" {
+  description = "The amount of time AWS Backup attempts a backup before canceling the job and returning an error."
+  default     = 360
+  type        = number
+}
+variable backup_ami {
+  description = "Set to true to create an AMI backup."
+  default     = false
+  type        = bool
+}
 variable subnet_id {
   description = ""
   default     = ""
@@ -149,17 +169,17 @@ variable cpu_credits {
   description = "T2/T3 Unlimited configuration. Can be `standard` and `unlimited`."
 }
 variable instance_tags {
-  description = ""
+  description = "A mapping of tags to assign to the EC2 instance resource."
   default     = {}
   type        = map
 }
 variable volume_tags {
-  description = ""
+  description = "A mapping of tags to assign to the EBS volumes."
   default     = {}
   type        = map
 }
 variable backup_tags {
-  description = ""
+  description = "A mapping of tags to assign to the backup resource."
   default     = {}
   type        = map
 }

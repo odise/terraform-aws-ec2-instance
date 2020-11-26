@@ -1,6 +1,10 @@
 # terraform-aws-ec2-instance
 
-This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, Elastic IP and Route53 DNS record.
+This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, Elastic IP and Route53 DNS record. It uses the following Terraform modules underneath:
+
+* [terraform-aws-modules/ec2-instance/aws](https://github.com/terraform-aws-modules/terraform-aws-ec2-instance/)
+* [lgallard/backup/aws](https://github.com/lgallard/terraform-aws-backup)
+
 # Usage
 <!--- BEGIN_TF_DOCS --->
 ## Requirements

@@ -17,7 +17,7 @@ data "aws_security_group" "selected" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=v2.23.0"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=v2.64.0"
 
   name                 = "dev"
   cidr                 = local.vpc_cidr
@@ -52,6 +52,7 @@ module ec2 {
       backup_volume = true
     },
   ]
+  # in case you want to handle AMI backed in volumes this is the place
   #  buildin_ebs_block_device = [
   #    {
   #      device_name = "/dev/sdg"
@@ -62,7 +63,10 @@ module ec2 {
   #    },
   #  ]
   backup_buildin_volumes = true
-  subnet_id              = module.vpc.public_subnets[0]
+  backup_ami             = true
+  # lets test this every hour
+  backup_volumes_schedule = "cron(40 * * * ? *)"
+  subnet_id               = module.vpc.public_subnets[0]
   # private_ip  =
   # vpc_security_group_ids  =
   associate_public_ip_address = true
