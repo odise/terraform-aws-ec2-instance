@@ -29,10 +29,15 @@ This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, 
 | ami | n/a | `string` | `"ami-0555c8a4c6ccc7aef"` | no |
 | assign\_eip | n/a | `bool` | `false` | no |
 | associate\_public\_ip\_address | n/a | `bool` | `false` | no |
+| backup\_ami | Set to true to create an AMI backup. | `bool` | `false` | no |
 | backup\_buildin\_volumes | Set this `true` to backup all EBS volumes that facilitate the under laying AMI. Consider to use `backup_ami` instead. | `bool` | `true` | no |
-| backup\_tags | n/a | `map` | `{}` | no |
-| backup\_volumes\_delete\_after | n/a | `number` | `30` | no |
-| backup\_volumes\_schedule | n/a | `string` | `"cron(0 1 * * ? *)"` | no |
+| backup\_tags | A mapping of tags to assign to the backup resource. | `map` | `{}` | no |
+| backup\_volumes\_cold\_storage\_after | Specifies the number of days after creation that a recovery point is moved to cold storage | `number` | `0` | no |
+| backup\_volumes\_completion\_window | The amount of time AWS Backup attempts a backup before canceling the job and returning an error. | `number` | `360` | no |
+| backup\_volumes\_delete\_after | Specifies the number of days after creation that a recovery point is deleted. | `number` | `30` | no |
+| backup\_volumes\_schedule | A CRON expression specifying when AWS Backup initiates a backup job. | `string` | `"cron(0 1 * * ? *)"` | no |
+| backup\_volumes\_start\_window | The amount of time in minutes before beginning a backup. | `number` | `120` | no |
+| backup\_volumes\_target\_vault\_name | The name of a logical container where backups are stored. | `string` | `"Default"` | no |
 | buildin\_ebs\_block\_device | EBS block devices build into the under laying AMI to be attach to the instance. Block device configurations only apply on resource creation. | `list(map(string))` | `[]` | no |
 | cpu\_credits | T2/T3 Unlimited configuration. Can be `standard` and `unlimited`. | `string` | `"standard"` | no |
 | disable\_api\_termination | n/a | `bool` | `true` | no |
@@ -43,7 +48,7 @@ This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, 
 | hosted\_zone\_name | n/a | `string` | `""` | no |
 | iam\_instance\_profile | n/a | `string` | `""` | no |
 | instance\_name | n/a | `string` | `"ec2-instance"` | no |
-| instance\_tags | n/a | `map` | `{}` | no |
+| instance\_tags | A mapping of tags to assign to the EC2 instance resource. | `map` | `{}` | no |
 | instance\_type | n/a | `string` | `"c4.large"` | no |
 | key\_name | n/a | `string` | `""` | no |
 | private\_ip | n/a | `string` | `""` | no |
@@ -53,9 +58,9 @@ This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, 
 | root\_block\_device\_iops | n/a | `number` | `null` | no |
 | root\_block\_device\_size | n/a | `number` | `20` | no |
 | route53\_record | n/a | `string` | `""` | no |
-| subnet\_id | variable backup\_ami { description = "Set to true to create an AMI backup." default     = false type        = bool } | `string` | `""` | no |
+| subnet\_id | n/a | `string` | `""` | no |
 | user\_data | n/a | `string` | `""` | no |
-| volume\_tags | n/a | `map` | `{}` | no |
+| volume\_tags | A mapping of tags to assign to the EBS volumes. | `map` | `{}` | no |
 | vpc\_security\_group\_ids | n/a | `list` | `[]` | no |
 
 ## Outputs
