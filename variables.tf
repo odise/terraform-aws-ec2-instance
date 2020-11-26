@@ -89,7 +89,7 @@ variable "backup_volumes_target_vault_name" {
 }
 variable "backup_volumes_start_window" {
   description = "The amount of time in minutes before beginning a backup."
-  default     = 120
+  default     = 60
   type        = number
 }
 variable "backup_volumes_completion_window" {
