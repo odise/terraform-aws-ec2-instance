@@ -82,7 +82,19 @@ module "ec2" {
     },
   ]
 
-  ebs_block_device = var.buildin_ebs_block_device
+  #  ebs_block_device = var.buildin_ebs_block_device
+  ebs_block_device = [for ebs_block_device in var.buildin_ebs_block_device :
+    {
+      delete_on_termination = lookup(ebs_block_device, "delete_on_termination", null)
+      device_name           = ebs_block_device.device_name
+      encrypted             = lookup(ebs_block_device, "encrypted", null)
+      iops                  = lookup(ebs_block_device, "iops", null)
+      kms_key_id            = lookup(ebs_block_device, "kms_key_id", null)
+      snapshot_id           = lookup(ebs_block_device, "snapshot_id", null)
+      volume_size           = lookup(ebs_block_device, "volume_size", null)
+      volume_type           = lookup(ebs_block_device, "volume_type", null)
+    }
+  ]
 
   tags = module.instance_tags.tags
   # this is causing prolems due to https://github.com/terraform-providers/terraform-provider-aws/issues/729
@@ -94,20 +106,19 @@ module "ec2" {
 }
 
 resource "aws_ebs_volume" "default" {
-  count             = length(var.ebs_block_device)
-  availability_zone = data.aws_subnet.selected.availability_zone
-  size              = var.ebs_block_device[count.index].volume_size
-  iops              = var.ebs_block_device[count.index].volume_type == "io1" ? var.ebs_block_device[count.index].iops : "0"
-  type              = var.ebs_block_device[count.index].volume_type
-  encrypted         = lookup(var.ebs_block_device[count.index], "encrypted", null)
-  kms_key_id        = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
-  snapshot_id       = lookup(var.ebs_block_device[count.index], "snapshot_id", null)
+  count                = length(var.ebs_block_device)
+  availability_zone    = data.aws_subnet.selected.availability_zone
+  size                 = var.ebs_block_device[count.index].volume_size
+  iops                 = var.ebs_block_device[count.index].volume_type == "io1" ? var.ebs_block_device[count.index].iops : "0"
+  type                 = var.ebs_block_device[count.index].volume_type
+  encrypted            = lookup(var.ebs_block_device[count.index], "encrypted", null)
+  kms_key_id           = lookup(var.ebs_block_device[count.index], "kms_key_id", null)
+  snapshot_id          = lookup(var.ebs_block_device[count.index], "snapshot_id", null)
+  multi_attach_enabled = lookup(var.ebs_block_device[count.index], "multi_attach_enabled", null)
   tags = merge(module.volume_tags.tags,
     {
-      BackupTag   = var.backup_volumes == true ? random_password.backuptag.result : "n/a"
-      device_name = var.ebs_block_device[count.index].device_name
+      BackupTag   = lookup(var.ebs_block_device[count.index], "backup_volume", false) == true ? random_password.backuptag.result : "n/a"
       instance_id = module.ec2.id[0]
-      count       = count.index
     }
   )
 }
@@ -143,6 +154,15 @@ module "ebs_backups" {
       }
     },
   ]
+
+  #  dynamic "selection" {
+  #    for_each = length(lookup(element(local.selections, count.index), "selection_tag", {})) == 0 ? [] : [lookup(element(local.selections, count.index), "selection_tag", {})]
+  #    content {
+  #      type  = lookup(selection_tag.value, "type", null)
+  #      key   = lookup(selection_tag.value, "key", null)
+  #      value = lookup(selection_tag.value, "value", null)
+  #    }
+  #  }
 
   selections = [
     {

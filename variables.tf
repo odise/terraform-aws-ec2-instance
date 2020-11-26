@@ -49,14 +49,38 @@ variable ebs_optimized {
   type        = bool
 }
 variable ebs_block_device {
-  description = ""
+  description = <<-EOT
+This is following the parameters of `ebs_block_device` from the `terraform-aws-modules/ec2-instance/aws` module.
+Extra parameter:
+- `backup_volume` boolean (Optional, default is false): set whether or not to backup the volume by setting.
+- `device_name` string:  (Required) The name of the device to mount.
+EOT
   default     = []
-  type        = list
+  type = list(object({
+    volume_size   = number
+    iops          = number
+    volume_type   = string
+    encrypted     = bool
+    kms_key_id    = string
+    snapshot_id   = string
+    device_name   = string
+    backup_volume = bool
+    })
+  )
 }
 variable buildin_ebs_block_device {
-  description = ""
+  description = "EBS block devices build into the under laying AMI to be attach to the instance. Block device configurations only apply on resource creation."
   default     = []
-  type        = list
+  type = list(object({
+    volume_size = number
+    iops        = number
+    volume_type = string
+    encrypted   = bool
+    kms_key_id  = string
+    snapshot_id = string
+    device_name = string
+    })
+  )
 }
 variable backup_volumes {
   description = ""
