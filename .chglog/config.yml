@@ -4,7 +4,21 @@ info:
   title: CHANGELOG
   repository_url: https://github.com/odise/terraform-aws-ec2-instance
 options:
+  commits:
+    filters:
+      Type:
+        - feat
+        - fix
+        - perf
+        - refactor
+  commit_groups:
+    title_maps:
+      feat: Features
+      fix: Bug Fixes
+      perf: Performance Improvements
+      refactor: Code Refactoring
   header:
-    pattern: "^(.*)$"
+    pattern: "^(\\w*)\\:\\s(.*)$"
     pattern_maps:
+      - Type
       - Subject
