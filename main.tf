@@ -129,7 +129,7 @@ resource "aws_volume_attachment" "default" {
 }
 
 locals {
-  backup_volumes         = contains(var.ebs_block_device[*].backup_volume, true)
+  backup_volumes         = contains(var.ebs_block_device[*].backup_volume, "true")
   backup_buildin_volumes = var.backup_buildin_volumes == true
   backup_ami             = var.backup_ami
   selection = concat(
