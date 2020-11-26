@@ -13,14 +13,14 @@ This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, 
 |------|---------|
 | terraform | >= 0.12.26, < 0.14 |
 | aws | >= 2.54.0 |
-| random | ~> 2.0 |
+| random | ~> 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | aws | >= 2.54.0 |
-| random | ~> 2.0 |
+| random | ~> 3.0 |
 
 ## Inputs
 
@@ -36,7 +36,7 @@ This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, 
 | backup\_volumes\_completion\_window | The amount of time AWS Backup attempts a backup before canceling the job and returning an error. | `number` | `360` | no |
 | backup\_volumes\_delete\_after | Specifies the number of days after creation that a recovery point is deleted. | `number` | `30` | no |
 | backup\_volumes\_schedule | A CRON expression specifying when AWS Backup initiates a backup job. | `string` | `"cron(0 1 * * ? *)"` | no |
-| backup\_volumes\_start\_window | The amount of time in minutes before beginning a backup. | `number` | `120` | no |
+| backup\_volumes\_start\_window | The amount of time in minutes before beginning a backup. | `number` | `60` | no |
 | backup\_volumes\_target\_vault\_name | The name of a logical container where backups are stored. | `string` | `"Default"` | no |
 | buildin\_ebs\_block\_device | EBS block devices build into the under laying AMI to be attach to the instance. Block device configurations only apply on resource creation. | `list(map(string))` | `[]` | no |
 | cpu\_credits | T2/T3 Unlimited configuration. Can be `standard` and `unlimited`. | `string` | `"standard"` | no |
