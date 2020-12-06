@@ -154,7 +154,7 @@ module "ebs_backups" {
   enabled = local.backup_buildin_volumes || local.backup_ami || local.backup_volumes
 
   source  = "lgallard/backup/aws"
-  version = "0.5.0"
+  version = "0.6.0"
   # Plan
   plan_name = var.instance_name
   # Multiple rules using a list of maps
