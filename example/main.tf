@@ -17,7 +17,7 @@ data "aws_security_group" "selected" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=v2.64.0"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc?ref=v2.70.0"
 
   name                 = "dev"
   cidr                 = local.vpc_cidr
