@@ -11,7 +11,7 @@ This module deploys an EC2 instance along with EBS snapshotting via AWS Backup, 
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.26, < 0.14 |
+| terraform | >= 0.12.26 |
 | aws | >= 2.54.0 |
 | random | ~> 3.0 |
 
