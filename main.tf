@@ -51,7 +51,7 @@ locals {
 
 module "ec2" {
   source                  = "terraform-aws-modules/ec2-instance/aws"
-  version                 = "~> 2.0"
+  version                 = "~> 5.0"
   instance_count          = 1
   disable_api_termination = var.disable_api_termination
 
